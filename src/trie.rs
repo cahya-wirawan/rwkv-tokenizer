@@ -3,7 +3,6 @@ use std::collections::HashMap;
 #[derive(Default, Debug)]
 struct TrieNode {
     children: HashMap<char, TrieNode>,
-    is_end_of_word: bool,
     id: u16
 }
 
@@ -11,7 +10,6 @@ impl TrieNode {
     fn new() -> Self {
         TrieNode {
             children: HashMap::new(),
-            is_end_of_word: false,
             id: 0
         }
     }
@@ -34,7 +32,6 @@ impl Trie {
         for ch in word.chars() {
             node = node.children.entry(ch).or_insert_with(TrieNode::new);
         }
-        node.is_end_of_word = true;
         node.id = id
     }
 
