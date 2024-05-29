@@ -1,10 +1,11 @@
 mod trie;
-
+extern crate unescape;
 use pyo3::prelude::*;
 use std::fs::File;
 use std::io::{self, BufRead};
 use regex::Regex;
 use trie::Trie;
+use unescape::unescape;
 
 #[derive(Debug)]
 #[pyclass]
@@ -33,6 +34,7 @@ impl Tokenizer {
                 let mut string = captures[2].to_string();
                 let _length = captures[3].parse::<usize>().unwrap();
                 string = string[1..string.len()-1].parse().unwrap();
+                let string = unescape(string.as_str()).unwrap();
                 tokenizer.trie.insert(string.to_string(), id);
                 tokenizer.tokens.push(string.to_string());
             }
