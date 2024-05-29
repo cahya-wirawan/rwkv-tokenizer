@@ -52,12 +52,19 @@ impl Trie {
     pub(crate) fn tokenize(&self, text: &str) -> Vec<u16> {
         let mut vec: Vec<u16> = Vec::new();
         let mut index: usize = 0;
+        let original_string = String::from(text);
+        let char_end = original_string.chars().count();
         loop {
-            let result = self.search_the_longest(&text[index..]);
+            let start_byte = original_string.char_indices().nth(index).map(|(i, _)| i).unwrap_or(0);
+            let text = &original_string[start_byte..];
+            let result = self.search_the_longest(&text);
             if result.0 != 0 {
                 vec.push(result.1.into());
                 index += <u16 as Into<usize>>::into(result.0);
             } else {
+                return vec;
+            }
+            if index >= char_end {
                 return vec;
             }
         }
