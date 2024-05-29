@@ -37,13 +37,20 @@ impl Trie {
 
     fn search_the_longest(&self, word: &str) -> (u16, u16) {
         let mut node = &self.root;
+        let mut old_node: &TrieNode = &self.root;
         let mut index = 0;
         for ch in word.chars() {
             if let Some(next_node) = node.children.get(&ch) {
+                old_node = node;
                 node = next_node;
                 index += 1;
             } else {
-                return (index, node.id);
+                if node.id == 0 {
+                    return (index-1, old_node.id);
+                }
+                else {
+                    return (index, node.id);
+                }
             }
         }
         (index, node.id)
