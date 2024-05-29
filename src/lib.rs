@@ -32,8 +32,7 @@ impl Tokenizer {
                 let id = captures[1].parse::<u16>().unwrap();
                 let mut string = captures[2].to_string();
                 let _length = captures[3].parse::<usize>().unwrap();
-                let patterns : &[_] = &['"', '\''];
-                string = string.trim_matches(patterns).to_string();
+                string = string[1..string.len()-1].parse().unwrap();
                 tokenizer.trie.insert(string.to_string(), id);
                 tokenizer.tokens.push(string.to_string());
             }
