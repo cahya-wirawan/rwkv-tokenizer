@@ -39,21 +39,30 @@ impl Trie {
         let mut node = &self.root;
         let mut old_node: &TrieNode = &self.root;
         let mut index = 0;
+        let mut old_index = 0;
         for ch in word.chars() {
             if let Some(next_node) = node.children.get(&ch) {
-                old_node = node;
+                if node.id != 0 {
+                    old_node = node;
+                    old_index = index;
+                }
                 node = next_node;
                 index += 1;
             } else {
                 if node.id == 0 {
-                    return (index-1, old_node.id);
+                    return (old_index, old_node.id);
                 }
                 else {
                     return (index, node.id);
                 }
             }
         }
-        (index, node.id)
+        if node.id == 0 {
+            return (old_index, old_node.id);
+        }
+        else {
+            return (index, node.id);
+        }
     }
 
     pub(crate) fn tokenize(&self, text: &str) -> Vec<u16> {
