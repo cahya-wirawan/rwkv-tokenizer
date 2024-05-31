@@ -22,3 +22,5 @@ $ pip install rwkv-tokenizer
 'Today is a beautiful day. 今天是美好的一天。'
 
 ```
+## Info
+There are still bugs where some characters are not encoded correctly.
