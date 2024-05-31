@@ -35,7 +35,7 @@ impl Tokenizer {
                 let _length = captures[3].parse::<usize>().unwrap();
                 string = string[1..string.len()-1].parse().unwrap();
                 let string = unescape(string.as_str()).unwrap();
-                tokenizer.trie.insert(string.to_string(), id);
+                tokenizer.trie.insert(string.as_str(), id);
                 tokenizer.tokens.push(string.to_string());
             }
             else {
