@@ -1,17 +1,21 @@
-use std::collections::HashMap;
 
 #[derive(Default, Debug)]
 struct TrieNode {
-    children: HashMap<char, TrieNode>,
+    children: Vec<TrieNode>,
     id: u16
 }
 
+
 impl TrieNode {
     fn new() -> Self {
-        TrieNode {
-            children: HashMap::new(),
+        let mut trinode = TrieNode {
+            children: Vec::new(),
             id: 0
+        };
+        for i in 0..256 {
+            trinode.children[i] = TrieNode::new();
         }
+        trinode
     }
 }
 
