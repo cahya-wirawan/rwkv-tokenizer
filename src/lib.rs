@@ -6,11 +6,12 @@ use std::io::{self, BufRead};
 use regex::Regex;
 use trie::Trie;
 use unescape::unescape;
+use std::str;
 
 #[derive(Debug)]
 #[pyclass]
 pub(crate) struct Tokenizer {
-    tokens: Vec<String>,
+    tokens: Vec<Vec<u8>>,
     trie: Trie
 }
 
@@ -26,7 +27,7 @@ impl Tokenizer {
         let reader = io::BufReader::new(file);
 
         let re = Regex::new(r"(\d+)\s+(b?)(.+)\s+(\d+)").unwrap();
-        tokenizer.tokens.push("".to_string());
+        tokenizer.tokens.push(vec![0]);
         for line in reader.lines() {
             let line = line?;
             if let Some(captures) = re.captures(&line) {
@@ -39,12 +40,13 @@ impl Tokenizer {
                 if is_byte.len() == 0 {
                     string = unescape(string.as_str()).unwrap();
                     sbytes = string.clone().into_bytes();
+                    tokenizer.tokens.push(Vec::from(string.as_bytes()));
                 } else {
                     sbytes = hex_to_bytes(string.as_str()).unwrap();
+                    tokenizer.tokens.push(sbytes.clone());
                 }
                 assert_eq!(sbytes.len(), length);
                 tokenizer.trie.insert(&sbytes, id);
-                tokenizer.tokens.push(string.to_string());
             }
             else {
                 println!("Line with issue: {:?}", line)
@@ -58,11 +60,12 @@ impl Tokenizer {
     }
 
     pub(crate) fn decode(&self, vec: Vec<u16>) -> String {
-        let mut result: String = "".to_owned();
+        let mut result: Vec<u8> = Vec::new();
         for index in vec.iter() {
-            result.push_str(&*self.tokens[*index as usize]);
+            let mut current_tokens = self.tokens[*index as usize].clone();
+            result.append(&mut current_tokens);
         }
-        return result;
+        return str::from_utf8(&*result).unwrap().to_string();
     }
 }
 
