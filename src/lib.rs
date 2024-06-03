@@ -32,7 +32,7 @@ impl Tokenizer {
             if let Some(captures) = re.captures(&line) {
                 let id = captures[1].parse::<u16>().unwrap();
                 let is_byte = captures[2].to_string();
-                let _length = captures[4].parse::<usize>().unwrap();
+                let length = captures[4].parse::<usize>().unwrap();
                 let mut string: String = captures[3].to_string();
                 string = string[1..string.len()-1].parse().unwrap();
                 let sbytes: Vec<u8>;
@@ -42,6 +42,7 @@ impl Tokenizer {
                 } else {
                     sbytes = hex_to_bytes(string.as_str()).unwrap();
                 }
+                assert_eq!(sbytes.len(), length);
                 tokenizer.trie.insert(&sbytes, id);
                 tokenizer.tokens.push(string.to_string());
             }
