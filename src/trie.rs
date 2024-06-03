@@ -31,13 +31,13 @@ impl Trie {
         }
     }
 
-    pub(crate) fn insert(&mut self, word: &str, id: u16) {
+    pub(crate) fn insert(&mut self, word: &Vec<u8>, id: u16) {
         let mut node = &mut self.root;
-        for ch in word.bytes() {
-            if node.children[ch as usize].is_none() {
-                node.children[ch as usize] = Option::from(TrieNode::new());
+        for ch in word {
+            if node.children[u8::from_be(*ch) as usize].is_none() {
+                node.children[u8::from_be(*ch) as usize] = Option::from(TrieNode::new());
             }
-            match &mut node.children[ch as usize] {
+            match &mut node.children[u8::from_be(*ch) as usize] {
                 Some(next_node) => node = next_node,
                 None => unreachable!(),  // We've just checked that it's not None
             }
@@ -45,13 +45,13 @@ impl Trie {
         node.id = id
     }
 
-    fn search_the_longest(&self, word: &str) -> (u16, u16) {
+    fn search_the_longest(&self, word: &[u8]) -> (u16, u16) {
         let mut node = &self.root;
         let mut old_node: &TrieNode = &self.root;
         let mut index = 0;
         let mut old_index = 0;
-        for ch in word.bytes() {
-            if let Some(next_node) = &node.children[ch as usize] {
+        for ch in word {
+            if let Some(next_node) = &node.children[*ch as usize] {
                 if node.id != 0 {
                     old_node = node;
                     old_index = index;
@@ -80,7 +80,7 @@ impl Trie {
         let text_length = text.len();
         let mut index: usize = 0;
         loop {
-            let result = self.search_the_longest(&text[index..]);
+            let result = self.search_the_longest(&text.as_bytes()[index..]);
             if result.0 != 0 {
                 vec.push(result.1.into());
                 index += <u16 as Into<usize>>::into(result.0);
