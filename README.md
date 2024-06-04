@@ -23,7 +23,12 @@ $ pip install rwkv-tokenizer
 
 ```
 
-## Performance
+## Performance and Validity Test
+
+We compared the encoding results of the Rust RWKV Tokenizer and the original tokenizer using some parts of 
+English WWikipedia and Chinese poetries dataset. Both results are identical. The Rust RWKV Tokenizer passes
+also the unit test that the original tokenizer provided.
+
 We did a performance comparison on [the simple English Wikipedia dataset 20220301.en](https://huggingface.co/datasets/legacy-datasets/wikipedia) among following tokenizer:
 - The original RWKV tokenizer (BlinkDL)
 - Huggingface implementaion of RWKV tokenizer
