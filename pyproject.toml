@@ -4,12 +4,24 @@ build-backend = "maturin"
 
 [project]
 name = "rwkv_tokenizer"
+version = "0.4.2"
 requires-python = ">=3.8"
+description = "RWKV Tokenizer"
+authors = [{ name = "Cahya Wirawan", email = "cahya.wirawan@gmail.com" }]
+readme = "README.md"
+license = {file = "LICENSE.txt"}
+keywords = ["LLM", "RWKV", "Language Model"]
 classifiers = [
     "Programming Language :: Rust",
     "Programming Language :: Python :: Implementation :: CPython",
     "Programming Language :: Python :: Implementation :: PyPy",
 ]
-dynamic = ["version"]
+
+[project.urls]
+homepage = "https://github.com/cahya-wirawan/rwkv-tokenizer"
+documentation = "https://github.com/cahya-wirawan/rwkv-tokenizer"
+repository = "https://github.com/cahya-wirawan/rwkv-tokenizer"
+changelog = "https://github.com/cahya-wirawan/rwkv-tokenizer/blob/master/CHANGELOG.md"
+
 [tool.maturin]
 features = ["pyo3/extension-module"]
