@@ -4,10 +4,9 @@ build-backend = "maturin"
 
 [project]
 name = "rwkv_tokenizer"
-version = "0.4.2"
+version = "0.4.4"
 requires-python = ">=3.8"
 description = "RWKV Tokenizer"
-authors = [{ name = "Cahya Wirawan", email = "cahya.wirawan@gmail.com" }]
 readme = "README.md"
 license = {file = "LICENSE.txt"}
 keywords = ["LLM", "RWKV", "Language Model"]
