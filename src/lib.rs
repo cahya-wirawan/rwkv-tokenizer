@@ -10,16 +10,16 @@ use std::str;
 
 #[derive(Debug)]
 #[pyclass]
-pub(crate) struct Tokenizer {
+pub(crate) struct WorldTokenizer {
     tokens: Vec<Vec<u8>>,
     trie: Trie
 }
 
 #[pymethods]
-impl Tokenizer {
+impl WorldTokenizer {
     #[new]
     pub(crate) fn new(filename: &str) -> io::Result<Self> {
-        let mut tokenizer = Tokenizer {
+        let mut tokenizer = WorldTokenizer {
             tokens: Vec::new(),
             trie: Trie::new()
         };
@@ -84,6 +84,6 @@ fn hex_to_bytes(hex: &str) -> Option<Vec<u8>> {
 
 #[pymodule]
 fn rwkv_tokenizer(_py: Python<'_>, m: &Bound<'_, PyModule>) -> PyResult<()> {
-    m.add_class::<Tokenizer>()?;
+    m.add_class::<WorldTokenizer>()?;
     Ok(())
 }

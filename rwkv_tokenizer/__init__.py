@@ -15,9 +15,7 @@ class RWKVTokenizer:
             raise Exception(f"The {name} is not supported.")
         self.vocab_filepath = str(Path(__path__[0]) / "rwkv_vocab_v20230424.txt") \
             if vocab_filepath is None else vocab_filepath
-        print(f"init vocab: {self.vocab_filepath}")
-        self.tokenizer = Tokenizer(self.vocab_filepath)
-        print(f"init tokenizer: {self.tokenizer}")
+        self.tokenizer = WorldTokenizer(self.vocab_filepath)
 
     def encode(self, text: str):
         tokens_ids = self.tokenizer.encode(text)
