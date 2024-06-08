@@ -83,7 +83,7 @@ fn hex_to_bytes(hex: &str) -> Option<Vec<u8>> {
 }
 
 #[pymodule]
-fn rwkv_tokenizer(_py: Python, m: &PyModule) -> PyResult<()> {
+fn rwkv_tokenizer(_py: Python<'_>, m: &Bound<'_, PyModule>) -> PyResult<()> {
     m.add_class::<Tokenizer>()?;
     Ok(())
 }
