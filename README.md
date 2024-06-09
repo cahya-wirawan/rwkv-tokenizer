@@ -1,7 +1,7 @@
 # RWKV Tokenizer (WIP)
 
-A fast RWKV Tokenizer using Rust, it supports the World tokenizer used by the RWKV v5 and v6 model.
-*This is my very first Rust program, so there might still have many bugs and silly codes :-)*
+A fast RWKV Tokenizer written in Rust that supports the World tokenizer used by the RWKV v5 and v6 models. 
+*This tokenizer is my very first Rust program, so it might still have many bugs and silly codes :-)*
 
 ## Installation
 Install the rwkv-tokenizer python module:
@@ -21,9 +21,9 @@ $ pip install rwkv-tokenizer
 
 ## Performance and Validity Test
 
-We compared the encoding results of the Rust RWKV Tokenizer and the original tokenizer using some parts of 
-English Wikipedia and Chinese poetries dataset. Both results are identical. The Rust RWKV Tokenizer passes
-also the unit test that the original tokenizer provided. Following steps describe how to do the unittest:
+We compared the encoding results of the Rust RWKV Tokenizer and the original tokenizer using some parts of
+the English Wikipedia and Chinese poetries datasets. Both results are identical. The Rust RWKV Tokenizer also 
+passes the original tokenizer's unit test. The following steps describe how to do the unit test:
 ```
 $ pip install pytest rwkv-tokenizer
 $ git clone https://github.com/cahya-wirawan/rwkv-tokenizer.git
@@ -38,8 +38,8 @@ We did a performance comparison on [the simple English Wikipedia dataset 2022030
 - OpenAI Tiktoken
 - The Rust RWKV tokenizer
 
-The comparison is done using [this jupyter notebook](tools/rwkv_tokenizers.ipynb) in an M2 Mac mini. The Rust RWKV tokenizer 
-is around 8.2x faster than the original tokenizer and 4.9x faster than OpenAI Tiktoken.
+The comparison is done using this [jupyter notebook](tools/rwkv_tokenizers.ipynb) in a M2 Mac mini. TThe Rust RWKV 
+tokenizer is around 8.2x faster than the original tokenizer and 4.9x faster than OpenAI Tiktoken.
 
 ![performance-comparison](data/performance-comparison.png)
 
