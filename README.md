@@ -39,7 +39,7 @@ We did a performance comparison on [the simple English Wikipedia dataset 2022030
 - The Rust RWKV tokenizer
 
 The comparison is done using [this jupyter notebook](tools/rwkv_tokenizers.ipynb) in an M2 Mac mini. The Rust RWKV tokenizer 
-is around 8x faster than the original tokenizer and 4.8x faster than OpenAI Tiktoken.
+is around 8.2x faster than the original tokenizer and 4.9x faster than OpenAI Tiktoken.
 
 ![performance-comparison](data/performance-comparison.png)
 
