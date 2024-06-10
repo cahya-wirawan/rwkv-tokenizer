@@ -1,6 +1,7 @@
 # RWKV Tokenizer (WIP)
 
-A fast RWKV Tokenizer written in Rust that supports the World Tokenizer used by the RWKV v5 and v6 models.
+A fast RWKV Tokenizer written in Rust that supports the World Tokenizer used by the 
+[RWKV](https://github.com/BlinkDL/RWKV-LM) v5 and v6 models.
 
 ## Installation
 Install the rwkv-tokenizer python module:
