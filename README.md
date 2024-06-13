@@ -21,9 +21,10 @@ $ pip install rwkv-tokenizer
 
 ## Performance and Validity Test
 
-We compared the encoding results of the Rust RWKV Tokenizer and the original tokenizer using some parts of
+We compared the encoding results of the Rust RWKV Tokenizer and the original tokenizer using
 the English Wikipedia and Chinese poetries datasets. Both results are identical. The Rust RWKV Tokenizer also 
-passes the original tokenizer's unit test. The following steps describe how to do the unit test:
+passes [the original tokenizer's unit test](https://github.com/BlinkDL/ChatRWKV/blob/main/tokenizer/rwkv_tokenizer.py). 
+The following steps describe how to do the unit test:
 ```
 $ pip install pytest rwkv-tokenizer
 $ git clone https://github.com/cahya-wirawan/rwkv-tokenizer.git
@@ -35,6 +36,8 @@ We did a performance comparison on [the simple English Wikipedia dataset 2022030
 - The original RWKV tokenizer (BlinkDL)
 - Huggingface implementaion of RWKV tokenizer
 - Huggingface LLama tokenizer
+- Huggingface Mistral tokenizer
+- Bert tokenizer
 - OpenAI Tiktoken
 - The Rust RWKV tokenizer
 
