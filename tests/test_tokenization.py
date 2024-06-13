@@ -4,6 +4,7 @@ import rwkv
 from rwkv.rwkv_tokenizer import TRIE_TOKENIZER
 from pathlib import Path
 import random
+from datasets import load_dataset
 
 BEAUTIFUL_DAY = "Today is a beautiful day. 今天是美好的一天。"
 
@@ -810,6 +811,26 @@ class TestTokenization(unittest.TestCase):
         tokenizer_rust = rwkv_tokenizer.RWKVTokenizer()
         token_ids_rust = tokenizer_rust.encode(LONG_UTF8_TEXT)
         self.assertEqual(token_ids_rust, token_ids_original)
+
+    def test_compare_with_original_wikipedia(self):
+        tokenizer_original = TRIE_TOKENIZER(Path(rwkv.__path__[0])/'rwkv_vocab_v20230424.txt')
+        tokenizer_rust = rwkv_tokenizer.RWKVTokenizer()
+        ds = load_dataset("wikipedia", "20220301.simple", trust_remote_code=True)
+        max_row = len(ds["train"])
+        for i in range(0, max_row):
+            token_ids_rust = tokenizer_rust.encode(ds["train"][i]["text"])
+            token_ids_original = tokenizer_original.encode(ds["train"][i]["text"])
+            self.assertEqual(token_ids_rust, token_ids_original)
+
+    def test_compare_with_original_chinese_poetries(self):
+        tokenizer_original = TRIE_TOKENIZER(Path(rwkv.__path__[0])/'rwkv_vocab_v20230424.txt')
+        tokenizer_rust = rwkv_tokenizer.RWKVTokenizer()
+        ds = load_dataset("Lifan-Z/Chinese-poetries-txt")
+        max_row = len(ds["train"])
+        for i in range(0, max_row):
+            token_ids_rust = tokenizer_rust.encode(ds["train"][i]["text"])
+            token_ids_original = tokenizer_original.encode(ds["train"][i]["text"])
+            self.assertEqual(token_ids_rust, token_ids_original)
 
 
 if __name__ == '__main__':
