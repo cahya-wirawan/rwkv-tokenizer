@@ -42,7 +42,7 @@ impl WorldTokenizer {
                     sbytes = string.clone().into_bytes();
                     tokenizer.tokens.push(Vec::from(string.as_bytes()));
                 } else {
-                    sbytes = hex_to_bytes(string.as_str()).unwrap();
+                    sbytes = WorldTokenizer::hex_to_bytes(string.as_str()).unwrap();
                     tokenizer.tokens.push(sbytes.clone());
                 }
                 assert_eq!(sbytes.len(), length);
@@ -67,20 +67,22 @@ impl WorldTokenizer {
         }
         return str::from_utf8(&*result).unwrap().to_string();
     }
-}
 
-fn hex_to_bytes(hex: &str) -> Option<Vec<u8>> {
-    let hex = hex.replace("\\x", "");
-    if hex.len() % 2 == 0 {
-        (0..hex.len())
-            .step_by(2)
-            .map(|i| hex.get(i..i + 2)
-                .and_then(|sub| u8::from_str_radix(sub, 16).ok()))
-            .collect()
-    } else {
-        None
+    #[staticmethod]
+    fn hex_to_bytes(hex: &str) -> Option<Vec<u8>> {
+        let hex = hex.replace("\\x", "");
+        if hex.len() % 2 == 0 {
+            (0..hex.len())
+                .step_by(2)
+                .map(|i| hex.get(i..i + 2)
+                    .and_then(|sub| u8::from_str_radix(sub, 16).ok()))
+                .collect()
+        } else {
+            None
+        }
     }
 }
+
 
 #[pymodule]
 fn rwkv_tokenizer(_py: Python<'_>, m: &Bound<'_, PyModule>) -> PyResult<()> {
