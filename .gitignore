@@ -70,3 +70,6 @@ docs/_build/
 
 # Pyenv
 .python-version
+
+tmp/
+tools/rwkv_tokenizers_bpe.ipynb
