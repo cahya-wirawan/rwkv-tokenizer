@@ -6,6 +6,11 @@ authors = ["Cahya Wirawan <cahya.wirawan@gmail.com>"]
 description = "A fast RWKV Tokenizer"
 license = "Apache-2.0"
 documentation = "https://github.com/cahya-wirawan/rwkv-tokenizer"
+exclude = [
+    "data/performance-comparison.png",
+    "rwkv_tokenizer/",
+    "tools/"
+]
 
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 [lib]
