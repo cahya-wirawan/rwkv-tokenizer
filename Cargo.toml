@@ -1,6 +1,6 @@
 [package]
-name = "rwkv_tokenizer"
-version = "0.5.2"
+name = "pyrwkv_tokenizer"
+version = "0.6.2"
 edition = "2021"
 authors = ["Cahya Wirawan <cahya.wirawan@gmail.com>"]
 description = "A fast RWKV Tokenizer"
@@ -15,13 +15,11 @@ exclude = [
 
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 [lib]
-name = "rwkv_tokenizer"
+name = "pyrwkv_tokenizer"
 # Use ["cdylib", "lib"] for unit test
 crate-type = ["cdylib"]
 # crate-type = ["cdylib", "lib"]
 
 [dependencies]
 pyo3 = "0.21.2"
-regex = "1.10.4"
-unescape = "0.1.0"
-once_cell = "1.19.0"
+rwkv-tokenizer = "0.5.5"

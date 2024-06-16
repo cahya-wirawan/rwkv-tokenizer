@@ -1,13 +1,13 @@
 # import the contents of the Rust library into the Python extension
-from .rwkv_tokenizer import *
-from .rwkv_tokenizer import __all__
+from .pyrwkv_tokenizer import *
+from .pyrwkv_tokenizer import __all__
 from pathlib import Path
 
 # optional: include the documentation from the Rust module
-from .rwkv_tokenizer import __doc__  # noqa: F401
+from .pyrwkv_tokenizer import __doc__  # noqa: F401
 
 __all__ = __all__ + ["RWKVTokenizer"]
-__version__ = "0.5.2"
+__version__ = "0.6.2"
 
 
 class RWKVTokenizer:

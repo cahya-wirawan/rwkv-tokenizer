@@ -1,5 +1,5 @@
 import unittest
-import rwkv_tokenizer
+import pyrwkv_tokenizer
 import rwkv
 from rwkv.rwkv_tokenizer import TRIE_TOKENIZER
 from pathlib import Path
@@ -722,37 +722,37 @@ Nórdicg: Ljœr ye caudran créneþ ý jor cẃran.
 
 class TestTokenization(unittest.TestCase):
     def test_class(self):
-        tokenizer = rwkv_tokenizer.RWKVTokenizer()
+        tokenizer = pyrwkv_tokenizer.RWKVTokenizer()
         self.assertIsNotNone(tokenizer)
 
     def test_tokenizer_name(self):
-        tokenizer = rwkv_tokenizer.RWKVTokenizer("WorldTokenizer")
+        tokenizer = pyrwkv_tokenizer.RWKVTokenizer("WorldTokenizer")
         self.assertIsNotNone(tokenizer)
 
     def test_tokenizer_name_unsupported(self):
         with self.assertRaises(Exception) as context:
-            tokenizer = rwkv_tokenizer.RWKVTokenizer("GPTNeox")
+            tokenizer = pyrwkv_tokenizer.RWKVTokenizer("GPTNeox")
         self.assertTrue('is not supported' in str(context.exception))
 
     def test_encoding_beautiful_day(self):
-        tokenizer = rwkv_tokenizer.RWKVTokenizer()
+        tokenizer = pyrwkv_tokenizer.RWKVTokenizer()
         token_ids = tokenizer.encode(BEAUTIFUL_DAY)
         self.assertEqual(token_ids, [33520, 4600, 332, 59219, 21509, 47, 33, 10381, 11639, 13091, 15597, 11685, 14734, 10250, 11639, 10080])
 
     def test_encoding_decoding_beautiful_day(self):
-        tokenizer = rwkv_tokenizer.RWKVTokenizer()
+        tokenizer = pyrwkv_tokenizer.RWKVTokenizer()
         token_ids = tokenizer.encode(BEAUTIFUL_DAY)
         text = tokenizer.decode(token_ids)
         self.assertEqual(text, BEAUTIFUL_DAY)
 
     def test_encoding_decoding_japanese(self):
-        tokenizer = rwkv_tokenizer.RWKVTokenizer()
+        tokenizer = pyrwkv_tokenizer.RWKVTokenizer()
         token_ids = tokenizer.encode(JAPANESE)
         text = tokenizer.decode(token_ids)
         self.assertEqual(text, JAPANESE)
 
     def test_utf8_tokenization(self):
-        tokenizer = rwkv_tokenizer.RWKVTokenizer()
+        tokenizer = pyrwkv_tokenizer.RWKVTokenizer()
         QQQ = ['', ' ', 'Õ\U000683b8', b'\xe6\xaa\x81'.decode('utf-8')]
 
         for TRIAL in range(500):
@@ -794,27 +794,27 @@ class TestTokenization(unittest.TestCase):
     def test_compare_with_original_beautiful_day(self):
         tokenizer_original = TRIE_TOKENIZER(Path(rwkv.__path__[0])/'rwkv_vocab_v20230424.txt')
         token_ids_original = tokenizer_original.encode(BEAUTIFUL_DAY)
-        tokenizer_rust = rwkv_tokenizer.RWKVTokenizer()
+        tokenizer_rust = pyrwkv_tokenizer.RWKVTokenizer()
         token_ids_rust = tokenizer_rust.encode(BEAUTIFUL_DAY)
         self.assertEqual(token_ids_rust, token_ids_original)
 
     def test_compare_with_original_japanese(self):
         tokenizer_original = TRIE_TOKENIZER(Path(rwkv.__path__[0])/'rwkv_vocab_v20230424.txt')
         token_ids_original = tokenizer_original.encode(JAPANESE)
-        tokenizer_rust = rwkv_tokenizer.RWKVTokenizer()
+        tokenizer_rust = pyrwkv_tokenizer.RWKVTokenizer()
         token_ids_rust = tokenizer_rust.encode(JAPANESE)
         self.assertEqual(token_ids_rust, token_ids_original)
 
     def test_compare_with_original_long_utf8(self):
         tokenizer_original = TRIE_TOKENIZER(Path(rwkv.__path__[0])/'rwkv_vocab_v20230424.txt')
         token_ids_original = tokenizer_original.encode(LONG_UTF8_TEXT)
-        tokenizer_rust = rwkv_tokenizer.RWKVTokenizer()
+        tokenizer_rust = pyrwkv_tokenizer.RWKVTokenizer()
         token_ids_rust = tokenizer_rust.encode(LONG_UTF8_TEXT)
         self.assertEqual(token_ids_rust, token_ids_original)
 
     def test_compare_with_original_wikipedia(self):
         tokenizer_original = TRIE_TOKENIZER(Path(rwkv.__path__[0])/'rwkv_vocab_v20230424.txt')
-        tokenizer_rust = rwkv_tokenizer.RWKVTokenizer()
+        tokenizer_rust = pyrwkv_tokenizer.RWKVTokenizer()
         ds = load_dataset("wikipedia", "20220301.simple", trust_remote_code=True)
         max_row = len(ds["train"])
         for i in range(0, max_row):
@@ -824,7 +824,7 @@ class TestTokenization(unittest.TestCase):
 
     def test_compare_with_original_chinese_poetries(self):
         tokenizer_original = TRIE_TOKENIZER(Path(rwkv.__path__[0])/'rwkv_vocab_v20230424.txt')
-        tokenizer_rust = rwkv_tokenizer.RWKVTokenizer()
+        tokenizer_rust = pyrwkv_tokenizer.RWKVTokenizer()
         ds = load_dataset("Lifan-Z/Chinese-poetries-txt")
         max_row = len(ds["train"])
         for i in range(0, max_row):

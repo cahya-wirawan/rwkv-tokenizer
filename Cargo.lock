@@ -180,6 +180,14 @@ dependencies = [
 ]
 
 [[package]]
+name = "pyrwkv_tokenizer"
+version = "0.6.2"
+dependencies = [
+ "pyo3",
+ "rwkv-tokenizer",
+]
+
+[[package]]
 name = "quote"
 version = "1.0.36"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -227,11 +235,11 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "adad44e29e4c806119491a7f06f03de4d1af22c3a680dd47f1e6e179439d1f56"
 
 [[package]]
-name = "rwkv_tokenizer"
-version = "0.5.2"
+name = "rwkv-tokenizer"
+version = "0.5.7"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "8286b9b47c368c3a22fb746d817b15c26b2190307f4c8b4717ba58c1c013b941"
 dependencies = [
- "once_cell",
- "pyo3",
  "regex",
  "unescape",
 ]
