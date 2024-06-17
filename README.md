@@ -1,4 +1,4 @@
-# RWKV Tokenizer (WIP)
+# RWKV Tokenizer
 
 A fast RWKV Tokenizer written in Rust that supports the World Tokenizer used by the 
 [RWKV](https://github.com/BlinkDL/RWKV-LM) v5 and v6 models.
@@ -6,12 +6,12 @@ A fast RWKV Tokenizer written in Rust that supports the World Tokenizer used by 
 ## Installation
 Install the rwkv-tokenizer python module:
 ```
-$ pip install rwkv-tokenizer
+$ pip install pyrwkv-tokenizer
 ```
 ## Usage
 ```
->>> import rwkv_tokenizer
->>> tokenizer = rwkv_tokenizer.RWKVTokenizer()
+>>> import pyrwkv_tokenizer
+>>> tokenizer = pyrwkv_tokenizer.RWKVTokenizer()
 >>> tokenizer.encode("Today is a beautiful day. 今天是美好的一天。")
 [33520, 4600, 332, 59219, 21509, 47, 33, 10381, 11639, 13091, 15597, 11685, 14734, 10250, 11639, 10080]
 >>> tokenizer.decode([33520, 4600, 332, 59219, 21509, 47, 33, 10381, 11639, 13091, 15597, 11685, 14734, 10250, 11639, 10080])
@@ -26,7 +26,7 @@ the English Wikipedia and Chinese poetries datasets. Both results are identical.
 passes [the original tokenizer's unit test](https://github.com/BlinkDL/ChatRWKV/blob/main/tokenizer/rwkv_tokenizer.py). 
 The following steps describe how to do the unit test:
 ```
-$ pip install pytest rwkv-tokenizer
+$ pip install pytest pyrwkv-tokenizer
 $ git clone https://github.com/cahya-wirawan/rwkv-tokenizer.git
 $ cd rwkv-tokenizer
 $ pytest
