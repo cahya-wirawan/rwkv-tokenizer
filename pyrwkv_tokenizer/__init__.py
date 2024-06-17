@@ -6,7 +6,7 @@ from .pyrwkv_tokenizer import __all__
 from .pyrwkv_tokenizer import __doc__  # noqa: F401
 
 __all__ = __all__ + ["RWKVTokenizer"]
-__version__ = "0.7.0"
+__version__ = "0.7.2"
 
 
 class RWKVTokenizer:
