@@ -7,7 +7,7 @@ from pathlib import Path
 from .pyrwkv_tokenizer import __doc__  # noqa: F401
 
 __all__ = __all__ + ["RWKVTokenizer"]
-__version__ = "0.7.4"
+__version__ = "0.7.5"
 
 
 class RWKVTokenizer:
