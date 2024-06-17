@@ -7,16 +7,14 @@ from pathlib import Path
 from .pyrwkv_tokenizer import __doc__  # noqa: F401
 
 __all__ = __all__ + ["RWKVTokenizer"]
-__version__ = "0.6.2"
+__version__ = "0.6.3"
 
 
 class RWKVTokenizer:
     def __init__(self, name="WorldTokenizer", vocab_filepath=None) -> None:
         if name != "WorldTokenizer":
             raise Exception(f"The {name} is not supported.")
-        self.vocab_filepath = str(Path(__path__[0]) / "rwkv_vocab_v20230424.txt") \
-            if vocab_filepath is None else vocab_filepath
-        self.tokenizer = WorldTokenizer(self.vocab_filepath)
+        self.tokenizer = WorldTokenizer()
 
     def encode(self, text: str):
         tokens_ids = self.tokenizer.encode(text)
