@@ -11,9 +11,9 @@ pub(crate) struct WorldTokenizer {
 #[pymethods]
 impl WorldTokenizer {
     #[new]
-    pub(crate) fn new() -> WorldTokenizer {
+    pub(crate) fn new(filename: &str) -> WorldTokenizer {
         WorldTokenizer {
-            tokenizer: rwkv_tokenizer::WorldTokenizer::new().unwrap()
+            tokenizer: rwkv_tokenizer::WorldTokenizer::new(Option::from(filename)).unwrap()
         }
     }
 
