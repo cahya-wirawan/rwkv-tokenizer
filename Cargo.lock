@@ -181,7 +181,7 @@ dependencies = [
 
 [[package]]
 name = "pyrwkv_tokenizer"
-version = "0.6.3"
+version = "0.7.0"
 dependencies = [
  "pyo3",
  "rwkv-tokenizer",
