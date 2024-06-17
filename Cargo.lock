@@ -181,7 +181,7 @@ dependencies = [
 
 [[package]]
 name = "pyrwkv_tokenizer"
-version = "0.7.0"
+version = "0.7.1"
 dependencies = [
  "pyo3",
  "rwkv-tokenizer",
@@ -236,9 +236,9 @@ checksum = "adad44e29e4c806119491a7f06f03de4d1af22c3a680dd47f1e6e179439d1f56"
 
 [[package]]
 name = "rwkv-tokenizer"
-version = "0.5.8"
+version = "0.7.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "77385b38092a52815f855f5e3ff6486b4b301f3abecac84ef6affb4c8c7a56fb"
+checksum = "bf43a7564b44cd51e8cb5a6ce0f71339a310e2e36b189c972216765b7a32eb04"
 dependencies = [
  "regex",
  "unescape",

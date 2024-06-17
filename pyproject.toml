@@ -4,7 +4,7 @@ build-backend = "maturin"
 
 [project]
 name = "pyrwkv_tokenizer"
-version = "0.7.0"
+version = "0.7.1"
 requires-python = ">=3.8"
 description = "RWKV Tokenizer"
 readme = "README.md"
