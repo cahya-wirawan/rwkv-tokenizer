@@ -6,7 +6,7 @@ A fast RWKV Tokenizer written in Rust that supports the World Tokenizer used by 
 ## Installation
 Install the rwkv-tokenizer python module:
 ```
-$ cargo add rwkv-tokenizer@=0.8.0
+$ cargo add rwkv-tokenizer@=0.8.5
 ```
 ## Usage
 ```
