@@ -1,6 +1,6 @@
 [package]
 name = "pyrwkv_tokenizer"
-version = "0.7.5"
+version = "0.8.0"
 edition = "2021"
 authors = ["Cahya Wirawan <cahya.wirawan@gmail.com>"]
 description = "A fast RWKV Tokenizer"

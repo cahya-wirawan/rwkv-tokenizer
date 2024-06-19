@@ -10,6 +10,7 @@ on:
     branches:
       - main
       - master
+      - restructure
     tags:
       - '*'
   pull_request:
@@ -44,6 +45,7 @@ jobs:
       - name: Build wheels
         uses: PyO3/maturin-action@v1
         with:
+          working-directory: bindings/python
           target: ${{ matrix.platform.target }}
           args: --release --out dist --find-interpreter
           sccache: 'true'
