@@ -1,12 +1,20 @@
 # RWKV Tokenizer
 
+
+[![GitHub Actions Status](https://github.com/cahya-wirawan/rwkv-tokenizer/actions/workflows/CI.yml/badge.svg)](https://github.com/cahya-wirawan/rwkv-tokenizer/actions/)
+[![Crates.io Version](https://img.shields.io/crates/v/rwkv-tokenizer.svg)](https://crates.io/crates/rwkv-tokenizer)
+[![Crates.io Downloads](https://img.shields.io/crates/d/rwkv-tokenizer.svg)](https://crates.io/crates/rwkv-tokenizer)
+[![License: Apache 2.0](https://img.shields.io/badge/license-Apache_2.0-blue.svg)](https://github.com/laysakura/trie-rs/blob/master/LICENSE-APACHE)
+
+
 A fast RWKV Tokenizer written in Rust that supports the World Tokenizer used by the 
 [RWKV](https://github.com/BlinkDL/RWKV-LM) v5 and v6 models.
 
 ## Installation
-Install the rwkv-tokenizer python module:
+To use rwkv-tokenizer, add the following to your Cargo.toml file:
 ```
-$ cargo add rwkv-tokenizer@=0.8.5
+[dependencies]
+rwkv-tokenizer = "0.8.5"
 ```
 ## Usage
 ```
@@ -40,10 +48,10 @@ We did a performance comparison on [the simple English Wikipedia dataset 2022030
 - OpenAI Tiktoken
 - The Rust RWKV tokenizer
 
-The comparison is done using this [jupyter notebook](tools/rwkv_tokenizers.ipynb) in a M2 Mac mini. The Rust RWKV 
+The comparison is done using this [jupyter notebook](https://github.com/cahya-wirawan/rwkv-tokenizer/blob/main/tools/rwkv_tokenizers.ipynb) in a M2 Mac mini. The Rust RWKV 
 tokenizer is around 17x faster than the original tokenizer and 9.6x faster than OpenAI Tiktoken.
 
-![performance-comparison](data/performance-comparison.png)
+![performance-comparison](https://media.githubusercontent.com/media/cahya-wirawan/rwkv-tokenizer/main/data/performance-comparison.png)
 
 ## Bugs
 ~~There are still bugs where some characters are not encoded correctly.~~ The bug have been fixed in the version 0.3.0.
