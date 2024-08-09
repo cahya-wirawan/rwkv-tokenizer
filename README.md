@@ -41,7 +41,7 @@ $ cd rwkv-tokenizer
 $ pytest
 ```
 
-We did a performance comparison on [the simple English Wikipedia dataset 20220301.en](https://huggingface.co/datasets/legacy-datasets/wikipedia) among following tokenizer:
+We did a performance comparison on [the simple English Wikipedia dataset 20220301.en](https://huggingface.co/datasets/legacy-datasets/wikipedia)* among following tokenizer:
 - The original RWKV tokenizer (BlinkDL)
 - Huggingface implementaion of RWKV tokenizer
 - Huggingface LLama tokenizer
@@ -54,6 +54,9 @@ The comparison is done using this [jupyter notebook](tools/rwkv_tokenizers.ipynb
 tokenizer is around 17x faster than the original tokenizer and 9.6x faster than OpenAI Tiktoken.
 
 ![performance-comparison](data/performance-comparison.png)
+
+*The simple English Wikipedia dataset can be downloaded as jsonl file from
+https://huggingface.co/datasets/cahya/simple-wikipedia/resolve/main/simple-wikipedia.jsonl?download=true
 
 ## Bugs
 ~~There are still bugs where some characters are not encoded correctly.~~ The bug have been fixed in the version 0.3.0.
