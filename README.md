@@ -41,7 +41,7 @@ $ cd rwkv-tokenizer
 $ pytest
 ```
 
-We did a performance comparison on [the simple English Wikipedia dataset 20220301.en](https://huggingface.co/datasets/legacy-datasets/wikipedia)* among following tokenizer:
+We did a performance comparison on [the simple English Wikipedia dataset 20220301.simple](https://huggingface.co/datasets/legacy-datasets/wikipedia)* among following tokenizer:
 - The original RWKV tokenizer (BlinkDL)
 - Huggingface implementaion of RWKV tokenizer
 - Huggingface LLama tokenizer
