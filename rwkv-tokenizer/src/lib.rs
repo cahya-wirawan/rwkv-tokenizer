@@ -1,5 +1,6 @@
 mod trie;
 use std::{str, env};
+use std::collections::HashMap;
 use std::fs::File;
 use std::io::{self, BufRead};
 use std::path::{Path};
@@ -64,6 +65,18 @@ impl WorldTokenizer {
             result.append(&mut current_tokens);
         }
         return str::from_utf8(&*result).unwrap().to_string();
+    }
+
+    pub fn vocab_size(&self) -> usize {
+        self.tokens.len()
+    }
+
+    pub fn get_vocab(&self) -> HashMap<&Vec<u8>, usize> {
+        let mut vocabularies: HashMap<&Vec<u8>, usize> = HashMap::new();
+        for (index, value) in self.tokens.iter().enumerate() {
+            vocabularies.insert(value, index);
+        }
+        vocabularies
     }
 
     fn hex_to_bytes(hex: &str) -> Option<Vec<u8>> {

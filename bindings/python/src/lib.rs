@@ -1,3 +1,4 @@
+use std::collections::HashMap;
 use pyo3::prelude::*;
 use std::str;
 use rwkv_tokenizer;
@@ -23,6 +24,14 @@ impl WorldTokenizer {
 
     pub(crate) fn decode(&self, vec: Vec<u16>) -> String {
         return self.tokenizer.decode(vec);
+    }
+
+    pub(crate) fn vocab_size(&self) -> usize {
+        return self.tokenizer.vocab_size();
+    }
+
+    pub(crate) fn get_vocab(&self) -> HashMap<&Vec<u8>, usize> {
+        return self.tokenizer.get_vocab();
     }
 }
 
