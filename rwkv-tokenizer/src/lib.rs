@@ -7,6 +7,8 @@ use std::path::{Path};
 use regex::Regex;
 use trie::Trie;
 use unescape::unescape;
+use rayon::prelude::*;
+
 
 #[derive(Debug)]
 pub struct WorldTokenizer {
@@ -58,6 +60,10 @@ impl WorldTokenizer {
         self.trie.tokenize(word)
     }
 
+    pub fn encode_batch(&self, word_list: Vec<String>) -> Vec<Vec<u16>> {
+        word_list.par_iter().map(|word| self.trie.tokenize(word)).collect()
+    }
+
     pub fn decode(&self, vec: Vec<u16>) -> String {
         let mut result: Vec<u8> = Vec::new();
         for index in vec.iter() {
@@ -71,10 +77,11 @@ impl WorldTokenizer {
         self.tokens.len()
     }
 
-    pub fn get_vocab(&self) -> HashMap<&Vec<u8>, usize> {
-        let mut vocabularies: HashMap<&Vec<u8>, usize> = HashMap::new();
+    pub fn get_vocab(&self) -> HashMap<String, usize> {
+        let mut vocabularies: HashMap<String, usize> = HashMap::new();
         for (index, value) in self.tokens.iter().enumerate() {
-            vocabularies.insert(value, index);
+            let text: String = String::from_utf8((*value).to_owned()).unwrap_or_else(|_e| "Binary string (TODO)".to_string());
+            vocabularies.insert(text, index);
         }
         vocabularies
     }
@@ -837,5 +844,14 @@ Nórdicg: Ljœr ye caudran créneþ ý jor cẃran."#;
         let token_ids = tokenizer.encode(LONG_UTF8_TEXT);
         let text = tokenizer.decode(token_ids);
         assert_eq!(text, LONG_UTF8_TEXT);
+    }
+
+    #[test]
+    fn test_get_vocab() {
+        let tokenizer = WorldTokenizer::new(None).unwrap();
+        let vocab = tokenizer.get_vocab();
+        // The vocab size should be 65529, but currently, the binary keys/strings are not included,
+        // therefore it is only 65044. It will be added later.
+        assert_eq!(vocab.len(), 65044);
     }
 }

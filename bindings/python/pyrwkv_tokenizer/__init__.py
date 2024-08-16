@@ -7,7 +7,7 @@ from pathlib import Path
 from .pyrwkv_tokenizer import __doc__  # noqa: F401
 
 __all__ = __all__ + ["RWKVTokenizer"]
-__version__ = "0.8.5"
+__version__ = "0.9.0"
 
 
 class RWKVTokenizer:
@@ -22,6 +22,16 @@ class RWKVTokenizer:
         tokens_ids = self.tokenizer.encode(text)
         return tokens_ids
 
+    def encode_batch(self, text_list: [str]):
+        tokens_ids = self.tokenizer.encode_batch(text_list)
+        return tokens_ids
+
     def decode(self, tokens_ids):
         text = self.tokenizer.decode(tokens_ids)
         return text
+
+    def vocab_size(self):
+        return self.tokenizer.vocab_size()
+
+    def get_vocab(self):
+        return self.tokenizer.get_vocab()

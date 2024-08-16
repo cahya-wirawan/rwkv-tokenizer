@@ -22,6 +22,10 @@ impl WorldTokenizer {
         self.tokenizer.encode(word)
     }
 
+    pub(crate) fn encode_batch(&self, word_list: Vec<String>) -> Vec<Vec<u16>> {
+        self.tokenizer.encode_batch(word_list)
+    }
+
     pub(crate) fn decode(&self, vec: Vec<u16>) -> String {
         return self.tokenizer.decode(vec);
     }
@@ -30,7 +34,7 @@ impl WorldTokenizer {
         return self.tokenizer.vocab_size();
     }
 
-    pub(crate) fn get_vocab(&self) -> HashMap<&Vec<u8>, usize> {
+    pub(crate) fn get_vocab(&self) -> HashMap<String, usize> {
         return self.tokenizer.get_vocab();
     }
 }

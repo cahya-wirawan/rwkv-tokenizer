@@ -1,6 +1,6 @@
 [package]
 name = "pyrwkv_tokenizer"
-version = "0.8.5"
+version = "0.9.0"
 edition = "2021"
 authors = ["Cahya Wirawan <cahya.wirawan@gmail.com>"]
 description = "A fast RWKV Tokenizer"
@@ -22,4 +22,5 @@ crate-type = ["cdylib"]
 
 [dependencies]
 pyo3 = "0.21.2"
-rwkv-tokenizer = "0.8.5"
+rwkv-tokenizer = { path = "../../rwkv-tokenizer" }
+rayon = "1.10.0"
