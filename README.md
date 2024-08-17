@@ -25,7 +25,8 @@ $ pip install pyrwkv-tokenizer
 [33520, 4600, 332, 59219, 21509, 47, 33, 10381, 11639, 13091, 15597, 11685, 14734, 10250, 11639, 10080]
 >>> tokenizer.decode([33520, 4600, 332, 59219, 21509, 47, 33, 10381, 11639, 13091, 15597, 11685, 14734, 10250, 11639, 10080])
 'Today is a beautiful day. 今天是美好的一天。'
-
+>>> tokenizer.encode_batch(["Today is a beautiful day.", " 今天是美好的一天。"])
+[[33520, 4600, 332, 59219, 21509, 47], [33, 10381, 11639, 13091, 15597, 11685, 14734, 10250, 11639, 10080]]
 ```
 
 ## Performance and Validity Test
@@ -55,9 +56,17 @@ tokenizer is around 17x faster than the original tokenizer and 9.6x faster than 
 
 ![performance-comparison](data/performance-comparison.png)
 
+We compared also the multithreading/batch encoding performance using the [Huggingface Tokenizers comparison script](https://github.com/huggingface/tokenizers/blob/main/bindings/python/benches/test_tiktoken.py):
+![performance-comparison](data/performance-comparison-multithreading.png) 
+
 *The simple English Wikipedia dataset can be downloaded as jsonl file from
 https://huggingface.co/datasets/cahya/simple-wikipedia/resolve/main/simple-wikipedia.jsonl?download=true
 
-## Bugs
-~~There are still bugs where some characters are not encoded correctly.~~ The bug have been fixed in the version 0.3.0.
+## Changelog
+- Version 0.9.0
+  - Added multithreading for the function encode_batch()
+  - Added batch/multithreading comparison
+- Version 0.3.0
+  - Fixed the issue where some characters were not encoded correctly
+
 *This tokenizer is my very first Rust program, so it might still have many bugs and silly codes :-)*
