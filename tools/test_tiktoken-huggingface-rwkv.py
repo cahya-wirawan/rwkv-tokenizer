@@ -78,20 +78,20 @@ def benchmark_batch(model: str, documents: list[str], num_threads: int, document
     enc.encode_ordinary_batch(documents, num_threads=num_threads)
     end = time.perf_counter_ns()
 
-    readable_size, unit = format_byte_size(num_bytes / (end - start) * 1e9)
+    readable_size, unit = format_byte_size(int(num_bytes / (end - start) * 1e9))
     print(f"tiktoken \t{readable_size}/s")
 
 
     start = time.perf_counter_ns()
     hf_enc.encode_batch_fast(documents)
     end = time.perf_counter_ns()
-    readable_size, unit = format_byte_size(num_bytes / (end - start) * 1e9)
+    readable_size, unit = format_byte_size(int(num_bytes / (end - start) * 1e9))
     print(f"huggingface \t{readable_size}/s")
     
     start = time.perf_counter_ns()
     rwkv_enc.encode_batch(documents)
     end = time.perf_counter_ns()
-    readable_size, unit = format_byte_size(num_bytes / (end - start) * 1e9)
+    readable_size, unit = format_byte_size(int(num_bytes / (end - start) * 1e9))
     print(f"rwkv \t\t{readable_size}/s")
 
 

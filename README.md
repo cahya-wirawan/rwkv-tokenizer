@@ -56,7 +56,8 @@ tokenizer is around 17x faster than the original tokenizer and 9.6x faster than 
 
 ![performance-comparison](data/performance-comparison.png)
 
-We compared also the multithreading/batch encoding performance using the [Huggingface Tokenizers comparison script](https://github.com/huggingface/tokenizers/blob/main/bindings/python/benches/test_tiktoken.py):
+We compared also the multithreading/batch encoding performance using a [script](tools/test_tiktoken-huggingface-rwkv.py) 
+which based on the [Huggingface Tokenizers](https://github.com/huggingface/tokenizers):
 ![performance-comparison](data/performance-comparison-multithreading.png) 
 
 *The simple English Wikipedia dataset can be downloaded as jsonl file from

@@ -74,3 +74,4 @@ docs/_build/
 tmp/
 tools/rwkv_tokenizers_bpe.ipynb
 data/wiki-en-tiny.jsonl
+target/
