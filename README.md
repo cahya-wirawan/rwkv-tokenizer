@@ -69,8 +69,8 @@ https://huggingface.co/datasets/cahya/simple-wikipedia/resolve/main/simple-wikip
 ## Tools using this tokenizer
 
 We also created the [json2bin](https://github.com/cahya-wirawan/json2bin) application to convert datasets from JSONL format 
-into binidx format, a data format used for training RWKV models. It supports batch encoding with multithreading and 
-can convert a dataset more than 70 times faster than the original json2binidx program written in Python.
+into binidx format, a data format used for training RWKV models. It uses multithreading to scale up the performance and 
+can convert a dataset more than 70 times faster (around 360 MB/s) than the original json2binidx program written in Python.
 
 ## Changelog
 - Version 0.9.0
