@@ -56,12 +56,21 @@ tokenizer is around 17x faster than the original tokenizer and 9.6x faster than 
 
 ![performance-comparison](data/performance-comparison.png)
 
-We compared also the multithreading/batch encoding performance using a [script](tools/test_tiktoken-huggingface-rwkv.py) 
-which based on the [Huggingface Tokenizers](https://github.com/huggingface/tokenizers):
+We updated the Rust RWKV world tokenizer to support multithreading for batch encoding. We ran the same comparison
+[script](tools/test_tiktoken-huggingface-rwkv.py)  from the [Huggingface Tokenizers](https://github.com/huggingface/tokenizers)
+with the additional rwkv tokenizer. The result shows that the rwkv world tokenizer is significantly faster than 
+the Tiktoken and Huggingface tokenizers in all numbers of threads and document sizes (on average, its speed is ten times faster).
+
 ![performance-comparison](data/performance-comparison-multithreading.png) 
 
 *The simple English Wikipedia dataset can be downloaded as jsonl file from
 https://huggingface.co/datasets/cahya/simple-wikipedia/resolve/main/simple-wikipedia.jsonl?download=true
+
+## Tools using this tokenizer
+
+We also created the [json2bin](https://github.com/cahya-wirawan/json2bin) application to convert datasets from JSONL format 
+into binidx format, a data format used for training RWKV models. It supports batch encoding with multithreading and 
+can convert a dataset more than 70 times faster than the original json2binidx program written in Python.
 
 ## Changelog
 - Version 0.9.0
