@@ -56,7 +56,7 @@ tokenizer is around 17x faster than the original tokenizer and 9.6x faster than 
 
 ![performance-comparison](data/performance-comparison.png)
 
-We updated the Rust RWKV world tokenizer to support multithreading for batch encoding. We ran the same comparison
+We updated the Rust RWKV world tokenizer to support batch encoding with multithreading. We ran the same comparison
 [script](tools/test_tiktoken-huggingface-rwkv.py)  from the [Huggingface Tokenizers](https://github.com/huggingface/tokenizers)
 with the additional rwkv tokenizer. The result shows that the rwkv world tokenizer is significantly faster than 
 the Tiktoken and Huggingface tokenizers in all numbers of threads and document sizes (on average, its speed is ten times faster).
