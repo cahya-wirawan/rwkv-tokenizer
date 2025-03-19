@@ -66,6 +66,7 @@ jobs:
         if: ${{ !startsWith(matrix.platform.target, 'x86') && matrix.platform.target != 'ppc64' }}
         uses: uraimo/run-on-arch-action@v2.5.0
         with:
+          working-directory: bindings/python
           arch: ${{ matrix.platform.target }}
           distro: ubuntu22.04
           githubToken: ${{ github.token }}
@@ -108,11 +109,13 @@ jobs:
       - name: pytest
         if: ${{ !startsWith(matrix.platform.target, 'aarch64') }}
         shell: bash
-        run: |
-          set -e
-          pip install pyrwkv_tokenizer --find-links dist --force-reinstall
-          pip install pytest
-          pytest
+        with:
+          working-directory: bindings/python
+          run: |
+            set -e
+            pip install pyrwkv_tokenizer --find-links dist --force-reinstall
+            pip install pytest
+            pytest
 
   macos:
     runs-on: ${{ matrix.platform.runner }}
@@ -143,11 +146,13 @@ jobs:
       - name: pytest
         if: ${{ !startsWith(matrix.platform.target, 'aarch64') }}
         shell: bash
-        run: |
-          set -e
-          pip install pyrwkv_tokenizer --find-links dist --force-reinstall
-          pip install pytest
-          pytest
+        with:
+          working-directory: bindings/python
+          run: |
+            set -e
+            pip install pyrwkv_tokenizer --find-links dist --force-reinstall
+            pip install pytest
+            pytest
 
   sdist:
     runs-on: ubuntu-latest
