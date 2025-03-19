@@ -109,13 +109,11 @@ jobs:
       - name: pytest
         if: ${{ !startsWith(matrix.platform.target, 'aarch64') }}
         shell: bash
-        with:
-          working-directory: bindings/python
-          run: |
-            set -e
-            pip install pyrwkv_tokenizer --find-links dist --force-reinstall
-            pip install pytest
-            pytest
+        run: |
+          set -e
+          pip install pyrwkv_tokenizer --find-links dist --force-reinstall
+          pip install pytest
+          pytest
 
   macos:
     runs-on: ${{ matrix.platform.runner }}
@@ -146,13 +144,12 @@ jobs:
       - name: pytest
         if: ${{ !startsWith(matrix.platform.target, 'aarch64') }}
         shell: bash
-        with:
-          working-directory: bindings/python
-          run: |
-            set -e
-            pip install pyrwkv_tokenizer --find-links dist --force-reinstall
-            pip install pytest
-            pytest
+        working-directory: bindings/python
+        run: |
+          set -e
+          pip install pyrwkv_tokenizer --find-links dist --force-reinstall
+          pip install pytest
+          pytest
 
   sdist:
     runs-on: ubuntu-latest
