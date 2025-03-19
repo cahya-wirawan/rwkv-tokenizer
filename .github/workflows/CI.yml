@@ -59,7 +59,7 @@ jobs:
         shell: bash
         run: |
           set -e
-          pip install pyrwkv_tokenizer rwkv --find-links dist --force-reinstall
+          pip install pyrwkv_tokenizer rwkv datasets --find-links dist --force-reinstall
           pip install pytest
           pytest
       - name: pytest
@@ -76,7 +76,7 @@ jobs:
             pip3 install -U pip pytest
           run: |
             set -e
-            pip3 install pyrwkv_tokenizer rwkv --find-links dist --force-reinstall
+            pip3 install pyrwkv_tokenizer rwkv datasets --find-links dist --force-reinstall
             pytest
 
   windows:
@@ -111,7 +111,7 @@ jobs:
         shell: bash
         run: |
           set -e
-          pip install pyrwkv_tokenizer rwkv --find-links dist --force-reinstall
+          pip install pyrwkv_tokenizer rwkv datasets --find-links dist --force-reinstall
           pip install pytest
           pytest
 
@@ -147,7 +147,7 @@ jobs:
         working-directory: bindings/python
         run: |
           set -e
-          pip install pyrwkv_tokenizer rwkv --find-links dist --force-reinstall
+          pip install pyrwkv_tokenizer rwkv datasets --find-links dist --force-reinstall
           pip install pytest
           pytest
 
