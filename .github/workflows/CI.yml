@@ -57,6 +57,7 @@ jobs:
       - name: pytest
         if: ${{ startsWith(matrix.platform.target, 'x86_64') }}
         shell: bash
+        working-directory: bindings/python
         run: |
           set -e
           pip install pyrwkv_tokenizer rwkv datasets --find-links dist --force-reinstall
@@ -109,6 +110,7 @@ jobs:
       - name: pytest
         if: ${{ !startsWith(matrix.platform.target, 'aarch64') }}
         shell: bash
+        working-directory: bindings/python
         run: |
           set -e
           pip install pyrwkv_tokenizer rwkv datasets --find-links dist --force-reinstall
