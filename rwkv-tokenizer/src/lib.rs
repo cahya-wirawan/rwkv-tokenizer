@@ -4,6 +4,7 @@ use std::collections::HashMap;
 use std::fs::File;
 use std::io::{self, BufRead};
 use std::path::{Path};
+use std::str::Utf8Error;
 use regex::Regex;
 use trie::Trie;
 use unescape::unescape;
@@ -64,13 +65,13 @@ impl WorldTokenizer {
         word_list.par_iter().map(|word| self.trie.tokenize(word)).collect()
     }
 
-    pub fn decode(&self, vec: Vec<u16>) -> String {
+    pub fn decode(&self, vec: Vec<u16>) -> Result<String, Utf8Error> {
         let mut result: Vec<u8> = Vec::new();
         for index in vec.iter() {
             let mut current_tokens = self.tokens[*index as usize].clone();
             result.append(&mut current_tokens);
         }
-        return str::from_utf8(&*result).unwrap().to_string();
+        Ok(str::from_utf8(&*result)?.to_string())
     }
 
     pub fn vocab_size(&self) -> usize {
@@ -826,7 +827,7 @@ Nórdicg: Ljœr ye caudran créneþ ý jor cẃran."#;
     fn test_encoding_decoding_beautiful_day() {
         let tokenizer = WorldTokenizer::new(None).unwrap();
         let token_ids = tokenizer.encode(BEAUTIFUL_DAY);
-        let text = tokenizer.decode(token_ids);
+        let text = tokenizer.decode(token_ids).unwrap();
         assert_eq!(text, BEAUTIFUL_DAY);
     }
 
@@ -834,7 +835,7 @@ Nórdicg: Ljœr ye caudran créneþ ý jor cẃran."#;
     fn test_encoding_decoding_japanese() {
         let tokenizer = WorldTokenizer::new(None).unwrap();
         let token_ids = tokenizer.encode(JAPANESE);
-        let text = tokenizer.decode(token_ids);
+        let text = tokenizer.decode(token_ids).unwrap();
         assert_eq!(text, JAPANESE);
     }
 
@@ -842,7 +843,7 @@ Nórdicg: Ljœr ye caudran créneþ ý jor cẃran."#;
     fn test_utf8_tokenization() {
         let tokenizer = WorldTokenizer::new(None).unwrap();
         let token_ids = tokenizer.encode(LONG_UTF8_TEXT);
-        let text = tokenizer.decode(token_ids);
+        let text = tokenizer.decode(token_ids).unwrap();
         assert_eq!(text, LONG_UTF8_TEXT);
     }
 
