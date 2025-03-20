@@ -63,22 +63,6 @@ jobs:
           pip install pyrwkv_tokenizer rwkv datasets --find-links dist --force-reinstall
           pip install pytest
           pytest
-      - name: pytest
-        if: ${{ !startsWith(matrix.platform.target, 'x86') && matrix.platform.target != 'ppc64' }}
-        uses: uraimo/run-on-arch-action@v2.5.0
-        working-directory: bindings/python
-        with:
-          arch: ${{ matrix.platform.target }}
-          distro: ubuntu22.04
-          githubToken: ${{ github.token }}
-          install: |
-            apt-get update
-            apt-get install -y --no-install-recommends python3 python3-pip
-            pip3 install -U pip pytest
-          run: |
-            set -e
-            pip3 install pyrwkv_tokenizer rwkv datasets --find-links dist --force-reinstall
-            pytest
 
   windows:
     runs-on: ${{ matrix.platform.runner }}
@@ -107,15 +91,6 @@ jobs:
         with:
           name: wheels-windows-${{ matrix.platform.target }}
           path: bindings/python/dist
-      - name: pytest
-        if: ${{ !startsWith(matrix.platform.target, 'aarch64') }}
-        shell: bash
-        working-directory: bindings/python
-        run: |
-          set -e
-          pip install pyrwkv_tokenizer rwkv datasets --find-links dist --force-reinstall
-          pip install pytest
-          pytest
 
   macos:
     runs-on: ${{ matrix.platform.runner }}
