@@ -22,5 +22,5 @@ crate-type = ["cdylib"]
 
 [dependencies]
 pyo3 = "0.23.5"
-rwkv-tokenizer = "0.9.0"
+rwkv-tokenizer = "0.9.1"
 rayon = "1.10.0"
