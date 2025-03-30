@@ -14,7 +14,7 @@ A fast RWKV Tokenizer written in Rust that supports the World Tokenizer used by 
 To use rwkv-tokenizer, add the following to your Cargo.toml file:
 ```
 [dependencies]
-rwkv-tokenizer = "0.8.5"
+rwkv-tokenizer = "0.9.1"
 ```
 ## Usage
 ```
@@ -23,7 +23,7 @@ use rwkv_tokenizer::WorldTokenizer;
 let text = "Today is a beautiful day. 今天是美好的一天。";
 let tokenizer = WorldTokenizer::new(None).unwrap();
 let tokens_ids = tokenizer.encode(text);
-let decoding = tokenizer.decode(tokens_ids);
+let decoding = tokenizer.decode(tokens_ids).unwrap();
 println!("tokens: {:?}", tokens_ids);
 println!("text: {:?}", text);
 println!("decoding: {:?}", decoding);
@@ -53,6 +53,13 @@ tokenizer is around 17x faster than the original tokenizer and 9.6x faster than 
 
 ![performance-comparison](https://media.githubusercontent.com/media/cahya-wirawan/rwkv-tokenizer/main/data/performance-comparison.png)
 
-## Bugs
-~~There are still bugs where some characters are not encoded correctly.~~ The bug have been fixed in the version 0.3.0.
+## Changelog
+- Version 0.9.1
+  - Added utf8 error handling to decoder
+- Version 0.9.0
+  - Added multithreading for the function encode_batch()
+  - Added batch/multithreading comparison
+- Version 0.3.0
+  - Fixed the issue where some characters were not encoded correctly
+
 *This tokenizer is my very first Rust program, so it might still have many bugs and silly codes :-)*

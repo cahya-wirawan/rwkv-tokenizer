@@ -74,6 +74,8 @@ can convert a dataset more than 70 times faster (around 360 MB/s) than the origi
 [json2binidx_tool](https://github.com/Abel2076/json2binidx_tool) written in Python.
 
 ## Changelog
+- Version 0.9.1
+  - Added utf8 error handling to decoder
 - Version 0.9.0
   - Added multithreading for the function encode_batch()
   - Added batch/multithreading comparison

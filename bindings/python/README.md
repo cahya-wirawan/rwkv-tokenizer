@@ -52,6 +52,14 @@ tokenizer is around 17x faster than the original tokenizer and 9.6x faster than 
 
 ![performance-comparison](https://media.githubusercontent.com/media/cahya-wirawan/rwkv-tokenizer/main/data/performance-comparison.png)
 
-## Bugs
-~~There are still bugs where some characters are not encoded correctly.~~ The bug have been fixed in the version 0.3.0.
+## Changelog
+- Version 0.9.1
+  - Added utf8 error handling to decoder
+- Version 0.9.0
+  - Added multithreading for the function encode_batch()
+  - Added batch/multithreading comparison
+- Version 0.3.0
+  - Fixed the issue where some characters were not encoded correctly
+
 *This tokenizer is my very first Rust program, so it might still have many bugs and silly codes :-)*
+

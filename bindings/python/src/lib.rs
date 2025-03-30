@@ -27,7 +27,7 @@ impl WorldTokenizer {
     }
 
     pub(crate) fn decode(&self, vec: Vec<u16>) -> String {
-        return self.tokenizer.decode(vec);
+        return self.tokenizer.decode(vec).unwrap();
     }
 
     pub(crate) fn vocab_size(&self) -> usize {
