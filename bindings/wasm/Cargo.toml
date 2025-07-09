@@ -1,0 +1,24 @@
+[package]
+name = "rwkv-tokenizer"
+version = "0.3.4"
+authors = ["Cahya Wirawan <cahya.wirawan@gmail.com>"]
+description = "RWKV Tokenizer - WebAssembly"
+license = "MIT/Apache-2.0"
+repository = "https://github.com/cahya-wirawan/rwkv-tokenizer"
+edition = "2021"
+
+[lib]
+crate-type = ["cdylib"]
+
+[dependencies]
+wasm-bindgen = "0.2"
+rwkv-tokenizer = { path = "../../rwkv-tokenizer" }
+console_log = "1.0.0"
+console_error_panic_hook = "0.1.7"
+web-time = "1.1.0"
+reqwest = { version = "0.12", features = ["blocking"]}
+tokio = { version = "1", features = ["macros", "rt", "time", "io-util"] } # Exclude "net"
+wasm-bindgen-futures = "0.4.50"
+serde = "1.0.219"
+serde_json = "1.0.140"
+js-sys = "0.3.77"

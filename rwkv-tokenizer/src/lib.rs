@@ -57,6 +57,42 @@ impl WorldTokenizer {
         Ok(tokenizer)
     }
 
+    pub fn from_buffer(buffer: &[u8]) -> io::Result<Self> {
+        let mut tokenizer = WorldTokenizer {
+            tokens: Vec::new(),
+            trie: Trie::new()
+        };
+        let reader = io::BufReader::new(buffer);
+
+        let re = Regex::new(r"(\d+)\s+(b?)(.+)\s+(\d+)").unwrap();
+        tokenizer.tokens.push(vec![0]);
+        for line in reader.lines() {
+            let line = line?;
+            if let Some(captures) = re.captures(&line) {
+                let id = captures[1].parse::<u16>().unwrap();
+                let is_byte = captures[2].to_string();
+                let length = captures[4].parse::<usize>().unwrap();
+                let mut string: String = captures[3].to_string();
+                string = string[1..string.len()-1].parse().unwrap();
+                let sbytes: Vec<u8>;
+                if is_byte.len() == 0 {
+                    string = unescape(string.as_str()).unwrap();
+                    sbytes = string.clone().into_bytes();
+                    tokenizer.tokens.push(Vec::from(string.as_bytes()));
+                } else {
+                    sbytes = WorldTokenizer::hex_to_bytes(string.as_str()).unwrap();
+                    tokenizer.tokens.push(sbytes.clone());
+                }
+                assert_eq!(sbytes.len(), length);
+                tokenizer.trie.insert(&sbytes, id);
+            }
+            else {
+                println!("Line with issue: {:?}", line)
+            }
+        }
+        Ok(tokenizer)
+    }
+
     pub fn encode(&self, word: &str) -> Vec<u16> {
         self.trie.tokenize(word)
     }
