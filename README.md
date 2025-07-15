@@ -13,11 +13,14 @@ A fast RWKV Tokenizer written in Rust that supports the World Tokenizer used by 
 [RWKV](https://github.com/BlinkDL/RWKV-LM) v5 and v6 models.
 
 ## Installation
+
+### Python binding
+
 Install the rwkv-tokenizer python module:
 ```
 $ pip install pyrwkv-tokenizer
 ```
-## Usage
+#### Usage
 ```
 >>> import pyrwkv_tokenizer
 >>> tokenizer = pyrwkv_tokenizer.RWKVTokenizer()
@@ -28,6 +31,67 @@ $ pip install pyrwkv-tokenizer
 >>> tokenizer.encode_batch(["Today is a beautiful day.", " 今天是美好的一天。"])
 [[33520, 4600, 332, 59219, 21509, 47], [33, 10381, 11639, 13091, 15597, 11685, 14734, 10250, 11639, 10080]]
 ```
+
+### WebAssembly binding
+
+There are two WebAssembly modules: Nodejs and Web module.
+Install the RWKV Tokenizer WebAssembly **rwkv-tokenizer** if the application runs only as nodejs application or WebAsesembly **rwkv-tokenizer-web** if the application is a web application. Following is an example to install and run a nodejs application:
+
+```
+$ npm install rwkv-tokenizer
+```
+
+#### Usage
+
+Create an example javascript file wasm.js with following content:
+```
+const { WorldTokenizer } = require('rwkv-tokenizer');
+
+async function runWasm() {
+  try {
+    const textToEncode = "Today is a beautiful day. 今天是美好的一天。";
+    const tokenizer = new WorldTokenizer();
+    let encodedText = tokenizer.encode(textToEncode);
+    console.log(`Encoded text using tokenizer:`, encodedText);
+    let decodedText = tokenizer.decode(encodedText);
+    console.log(`Decoded text using tokenizer:`, decodedText);
+    let encodedTextBatch = tokenizer.encode_batch([textToEncode, "Another sentence."]);
+    console.log(`Encoded text using tokenizer:`, encodedTextBatch);
+
+  } catch (error) {
+    console.error("Error loading or using WASM module:", error);
+  }
+}
+
+runWasm();
+```
+
+and execute it:
+``` bash
+$ node wasm.js
+```
+The ouput should be like:
+```
+Encoded text using tokenizer: Uint16Array(16) [
+  33520,  4600,   332, 59219,
+  21509,    47,    33, 10381,
+  11639, 13091, 15597, 11685,
+  14734, 10250, 11639, 10080
+]
+Decoded text using tokenizer: Today is a beautiful day. 今天是美好的一天。
+Encoded text using tokenizer: [
+  Uint16Array(16) [
+    33520,  4600,   332, 59219,
+    21509,    47,    33, 10381,
+    11639, 13091, 15597, 11685,
+    14734, 10250, 11639, 10080
+  ],
+  Uint16Array(3) [ 48358, 57192, 47 ]
+]
+
+```
+
+A demo of the Webassembly RWKV Tokenizer running as web application is available at https://cahya-wirawan.github.io/rwkv-tokenizer-wasm/ with its source code https://github.com/cahya-wirawan/rwkv-tokenizer-wasm.
 
 ## Performance and Validity Test
 
@@ -74,6 +138,9 @@ can convert a dataset more than 70 times faster (around 360 MB/s) than the origi
 [json2binidx_tool](https://github.com/Abel2076/json2binidx_tool) written in Python.
 
 ## Changelog
+- Version 0.10.0
+  - Added a function to create the toknizer from a vocabulary stored in a buffer.
+  - Added WebAssembly binding
 - Version 0.9.1
   - Added utf8 error handling to decoder
 - Version 0.9.0
