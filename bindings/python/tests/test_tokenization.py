@@ -815,7 +815,7 @@ class TestTokenization(unittest.TestCase):
     def test_compare_with_original_wikipedia(self):
         tokenizer_original = TRIE_TOKENIZER(Path(rwkv.__path__[0])/'rwkv_vocab_v20230424.txt')
         tokenizer_rust = pyrwkv_tokenizer.RWKVTokenizer()
-        ds = load_dataset("wikipedia", "20220301.simple", trust_remote_code=True)
+        ds = load_dataset("cahya/wikipedia-simple-en")
         max_row = len(ds["train"])
         for i in range(0, max_row):
             token_ids_rust = tokenizer_rust.encode(ds["train"][i]["text"])
