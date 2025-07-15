@@ -10,7 +10,7 @@
 
 
 A fast RWKV Tokenizer written in Rust that supports the World Tokenizer used by the 
-[RWKV](https://github.com/BlinkDL/RWKV-LM) v5 and v6 models.
+[RWKV](https://github.com/BlinkDL/RWKV-LM) v5 and newer models.
 
 ## Installation
 
