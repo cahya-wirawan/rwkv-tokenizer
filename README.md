@@ -12,7 +12,37 @@
 A fast RWKV Tokenizer written in Rust that supports the World Tokenizer used by the 
 [RWKV](https://github.com/BlinkDL/RWKV-LM) v5 and newer models.
 
-## Installation
+## Installation and Usage
+
+### Rust
+
+Add the **rwkv-tokenizer** to the dependecy list in Cargo.toml or add it using `cargo add rwkv-tokenizer`.
+
+#### Usage
+Following is a simple Rust code to use it:
+```
+use rwkv_tokenizer;
+
+fn main() {
+    let tokenizer = rwkv_tokenizer::WorldTokenizer::new(None).unwrap();
+    let text = "Today is a beautiful day. 今天是美好的一天。";
+    let ids = tokenizer.encode(text);
+    let tokens = tokenizer.decode(ids.clone()).unwrap();
+    println!("Text: {text}");
+    println!("Ids: {ids:?}");
+    println!("Tokens: {tokens:?}");
+}
+```
+And run it with `cargo run`:
+```
+$ cargo run
+   Compiling hello_rwkv v0.1.0 (/home/cahya/Work/MachineLearning/Rust/hello_rwkv)
+    Finished `dev` profile [unoptimized + debuginfo] target(s) in 0.44s
+     Running `target/debug/hello_rwkv`
+Text: Today is a beautiful day. 今天是美好的一天。
+Ids: [33520, 4600, 332, 59219, 21509, 47, 33, 10381, 11639, 13091, 15597, 11685, 14734, 10250, 11639, 10080]
+Tokens: "Today is a beautiful day. 今天是美好的一天。"
+```
 
 ### Python binding
 
