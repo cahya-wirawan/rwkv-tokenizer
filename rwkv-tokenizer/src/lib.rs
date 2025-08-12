@@ -4,7 +4,6 @@ use std::collections::HashMap;
 use std::fs::File;
 use std::io::{self, BufRead};
 use std::path::{Path};
-use std::str::Utf8Error;
 use regex::Regex;
 use trie::Trie;
 use unescape::unescape;
@@ -93,21 +92,51 @@ impl WorldTokenizer {
         Ok(tokenizer)
     }
 
+    /// Encode a word into token IDs.
     pub fn encode(&self, word: &str) -> Vec<u16> {
         self.trie.tokenize(word)
     }
 
-    pub fn encode_batch(&self, word_list: Vec<String>) -> Vec<Vec<u16>> {
-        word_list.par_iter().map(|word| self.trie.tokenize(word)).collect()
+    /// Set the global Rayon thread pool size.
+    pub fn set_global_thread_pool_size(num_threads: usize) -> Result<(), rayon::ThreadPoolBuildError> {
+        rayon::ThreadPoolBuilder::new()
+            .num_threads(num_threads)
+            .build_global()
     }
 
-    pub fn decode(&self, vec: Vec<u16>) -> Result<String, Utf8Error> {
-        let mut result: Vec<u8> = Vec::new();
-        for index in vec.iter() {
-            let mut current_tokens = self.tokens[*index as usize].clone();
-            result.append(&mut current_tokens);
+    /// Encode a batch of words in parallel.
+    pub fn encode_batch(&self, word_list: &[String]) -> Vec<Vec<u16>> {
+        word_list.par_iter().map(|word| self.trie.tokenize(word)).collect()
+    }
+    
+    /// Encode a batch of words in parallel with custom thread pool.
+    pub fn encode_batch_with_threads(&self, word_list: &[String], num_threads: usize) -> Vec<Vec<u16>> {
+        let pool = rayon::ThreadPoolBuilder::new()
+            .num_threads(num_threads)
+            .build()
+            .expect("Failed to build thread pool");
+        
+        pool.install(|| {
+            word_list.par_iter().map(|word| self.trie.tokenize(word)).collect()
+        })
+    }
+
+    /// Decode a vector of token IDs into a String.
+    pub fn decode(&self, tokens: Vec<u16>) -> Result<String, Box<dyn std::error::Error>> {
+        let total_len: usize = tokens.iter()
+            .map(|&idx| self.tokens.get(idx as usize).map_or(0, |t| t.len()))
+            .sum();
+        let mut result = Vec::with_capacity(total_len);
+        
+        for &token_idx in &tokens {
+            if let Some(token_bytes) = self.tokens.get(token_idx as usize) {
+                result.extend_from_slice(token_bytes);
+            } else {
+                return Err(format!("Invalid token index: {}", token_idx).into());
+            }
         }
-        Ok(str::from_utf8(&*result)?.to_string())
+        
+        String::from_utf8(result).map_err(Into::into)
     }
 
     pub fn vocab_size(&self) -> usize {
@@ -123,17 +152,20 @@ impl WorldTokenizer {
         vocabularies
     }
 
+    /// Convert a hex string to bytes with better error handling.
     fn hex_to_bytes(hex: &str) -> Option<Vec<u8>> {
         let hex = hex.replace("\\x", "");
-        if hex.len() % 2 == 0 {
-            (0..hex.len())
-                .step_by(2)
-                .map(|i| hex.get(i..i + 2)
-                    .and_then(|sub| u8::from_str_radix(sub, 16).ok()))
-                .collect()
-        } else {
-            None
+        if hex.len() % 2 != 0 {
+            return None;
         }
+        
+        let mut bytes = Vec::with_capacity(hex.len() / 2);
+        for chunk in hex.as_bytes().chunks_exact(2) {
+            let hex_str = std::str::from_utf8(chunk).ok()?;
+            let byte = u8::from_str_radix(hex_str, 16).ok()?;
+            bytes.push(byte);
+        }
+        Some(bytes)
     }
 }
 
