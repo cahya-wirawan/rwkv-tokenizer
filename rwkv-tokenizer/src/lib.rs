@@ -6,6 +6,7 @@ use std::io::{self, BufRead};
 use std::path::{Path};
 use std::str::Utf8Error;
 use regex::Regex;
+use once_cell::sync::Lazy;
 use trie::Trie;
 use unescape::unescape;
 use rayon::prelude::*;
@@ -18,6 +19,7 @@ pub struct WorldTokenizer {
 }
 
 impl WorldTokenizer {
+    /// Create a new WorldTokenizer from a vocab file path (or default).
     pub fn new(vocab_filepath: Option<&str>) -> io::Result<Self> {
         let mut tokenizer = WorldTokenizer {
             tokens: Vec::new(),
@@ -28,30 +30,31 @@ impl WorldTokenizer {
         let file = File::open(vocab_filepath)?;
         let reader = io::BufReader::new(file);
 
-        let re = Regex::new(r"(\d+)\s+(b?)(.+)\s+(\d+)").unwrap();
+        static RE: Lazy<Regex> = Lazy::new(|| Regex::new(r"(\d+)\s+(b?)(.+)\s+(\d+)").expect("Failed to compile regex"));
         tokenizer.tokens.push(vec![0]);
         for line in reader.lines() {
             let line = line?;
-            if let Some(captures) = re.captures(&line) {
-                let id = captures[1].parse::<u16>().unwrap();
+            if let Some(captures) = RE.captures(&line) {
+                let id = captures[1].parse::<u16>().map_err(|_| io::Error::new(io::ErrorKind::InvalidData, format!("Invalid id in line: {}", line)))?;
                 let is_byte = captures[2].to_string();
-                let length = captures[4].parse::<usize>().unwrap();
+                let length = captures[4].parse::<usize>().map_err(|_| io::Error::new(io::ErrorKind::InvalidData, format!("Invalid length in line: {}", line)))?;
                 let mut string: String = captures[3].to_string();
-                string = string[1..string.len()-1].parse().unwrap();
+                string = string[1..string.len()-1].parse().map_err(|_| io::Error::new(io::ErrorKind::InvalidData, format!("Invalid string in line: {}", line)))?;
                 let sbytes: Vec<u8>;
-                if is_byte.len() == 0 {
-                    string = unescape(string.as_str()).unwrap();
+                if is_byte.is_empty() {
+                    string = unescape(string.as_str()).ok_or_else(|| io::Error::new(io::ErrorKind::InvalidData, format!("Unescape failed in line: {}", line)))?;
                     sbytes = string.clone().into_bytes();
                     tokenizer.tokens.push(Vec::from(string.as_bytes()));
                 } else {
-                    sbytes = WorldTokenizer::hex_to_bytes(string.as_str()).unwrap();
+                    sbytes = WorldTokenizer::hex_to_bytes(string.as_str()).ok_or_else(|| io::Error::new(io::ErrorKind::InvalidData, format!("Hex decode failed in line: {}", line)))?;
                     tokenizer.tokens.push(sbytes.clone());
                 }
-                assert_eq!(sbytes.len(), length);
+                if sbytes.len() != length {
+                    return Err(io::Error::new(io::ErrorKind::InvalidData, format!("Token length mismatch in line: {}", line)));
+                }
                 tokenizer.trie.insert(&sbytes, id);
-            }
-            else {
-                println!("Line with issue: {:?}", line)
+            } else {
+                eprintln!("Line with issue: {:?}", line);
             }
         }
         Ok(tokenizer)
@@ -93,27 +96,35 @@ impl WorldTokenizer {
         Ok(tokenizer)
     }
 
+    /// Encode a word into token IDs.
     pub fn encode(&self, word: &str) -> Vec<u16> {
         self.trie.tokenize(word)
     }
 
+    /// Encode a batch of words in parallel.
     pub fn encode_batch(&self, word_list: Vec<String>) -> Vec<Vec<u16>> {
         word_list.par_iter().map(|word| self.trie.tokenize(word)).collect()
     }
 
+    /// Decode a vector of token IDs into a String.
     pub fn decode(&self, vec: Vec<u16>) -> Result<String, Utf8Error> {
         let mut result: Vec<u8> = Vec::new();
-        for index in vec.iter() {
-            let mut current_tokens = self.tokens[*index as usize].clone();
-            result.append(&mut current_tokens);
+        for &index in vec.iter() {
+            if let Some(tokens) = self.tokens.get(index as usize) {
+                result.extend_from_slice(tokens);
+            } else {
+                return Err(Utf8Error::from_bytes(&[0]));
+            }
         }
-        Ok(str::from_utf8(&*result)?.to_string())
+        Ok(str::from_utf8(&result)?.to_string())
     }
 
+    /// Get the vocabulary size.
     pub fn vocab_size(&self) -> usize {
         self.tokens.len()
     }
 
+    /// Get the vocabulary as a map from string to index.
     pub fn get_vocab(&self) -> HashMap<String, usize> {
         let mut vocabularies: HashMap<String, usize> = HashMap::new();
         for (index, value) in self.tokens.iter().enumerate() {
@@ -123,17 +134,20 @@ impl WorldTokenizer {
         vocabularies
     }
 
+    /// Convert a hex string to bytes.
     fn hex_to_bytes(hex: &str) -> Option<Vec<u8>> {
         let hex = hex.replace("\\x", "");
-        if hex.len() % 2 == 0 {
-            (0..hex.len())
-                .step_by(2)
-                .map(|i| hex.get(i..i + 2)
-                    .and_then(|sub| u8::from_str_radix(sub, 16).ok()))
-                .collect()
-        } else {
-            None
+        if hex.len() % 2 != 0 {
+            return None;
         }
+        let mut bytes = Vec::with_capacity(hex.len() / 2);
+        for i in (0..hex.len()).step_by(2) {
+            match u8::from_str_radix(&hex[i..i+2], 16) {
+                Ok(b) => bytes.push(b),
+                Err(_) => return None,
+            }
+        }
+        Some(bytes)
     }
 }
 
