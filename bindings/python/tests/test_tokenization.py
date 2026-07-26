@@ -751,6 +751,18 @@ class TestTokenization(unittest.TestCase):
         text = tokenizer.decode(token_ids)
         self.assertEqual(text, JAPANESE)
 
+    def test_encode_parallel_matches_encode(self):
+        tokenizer = pyrwkv_tokenizer.RWKVTokenizer()
+        # Well past the 64 KB threshold so the chunked path is actually taken.
+        long_text = (LONG_UTF8_TEXT + JAPANESE + BEAUTIFUL_DAY) * 8
+        self.assertGreater(len(long_text.encode('utf-8')), 1 << 16)
+        self.assertEqual(tokenizer.encode_parallel(long_text), tokenizer.encode(long_text))
+
+    def test_encode_parallel_falls_back_on_short_text(self):
+        tokenizer = pyrwkv_tokenizer.RWKVTokenizer()
+        for text in ["", "a", BEAUTIFUL_DAY, JAPANESE]:
+            self.assertEqual(tokenizer.encode_parallel(text), tokenizer.encode(text))
+
     def test_utf8_tokenization(self):
         tokenizer = pyrwkv_tokenizer.RWKVTokenizer()
         QQQ = ['', ' ', 'Õ\U000683b8', b'\xe6\xaa\x81'.decode('utf-8')]

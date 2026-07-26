@@ -48,54 +48,50 @@ impl Trie {
         node.id = id
     }
 
-    fn search_the_longest(&self, word: &[u8]) -> (u16, u16) {
+    /// Greedy longest match starting at `bytes[from..]`: walks the trie until it dead-ends,
+    /// remembering the deepest node that terminated a valid token. Returns the matched byte
+    /// length and its token id, or `(0, 0)` when nothing matches.
+    #[inline]
+    pub(crate) fn longest_match(&self, bytes: &[u8], from: usize) -> (usize, u16) {
         let mut node = &self.root;
-        let mut old_node: &TrieNode = &self.root;
-        let mut index = 0;
-        let mut old_index = 0;
-        for ch in word {
-            let ch = u8::from_be(*ch) as usize;
-            let index_a = ch >> 4;
-            let index_b = ch & 15;
-            if let Some(next_node) = &node.children[index_a][index_b]{
-                if node.id != 0 {
-                    old_node = node;
-                    old_index = index;
-                }
-                node = &next_node;
-                index += 1;
-            } else {
-                if node.id == 0 {
-                    return (old_index, old_node.id);
-                }
-                else {
-                    return (index, node.id);
-                }
+        let mut best_length = 0;
+        let mut best_id = 0;
+        for (offset, ch) in bytes[from..].iter().enumerate() {
+            let ch = *ch as usize;
+            match &node.children[ch >> 4][ch & 15] {
+                Some(next_node) => node = next_node,
+                None => break,
+            }
+            if node.id != 0 {
+                best_length = offset + 1;
+                best_id = node.id;
             }
         }
-        if node.id == 0 {
-            return (old_index, old_node.id);
+        (best_length, best_id)
+    }
+
+    /// Tokenize `bytes` from `from` until at least `until`, appending ids to `out`.
+    ///
+    /// Returns the position where tokenization actually stopped. That can exceed `until`
+    /// when the final token straddles the limit, which is what lets `encode_parallel`
+    /// detect a mis-guessed chunk boundary.
+    pub(crate) fn tokenize_range(&self, bytes: &[u8], from: usize, until: usize, out: &mut Vec<u16>) -> usize {
+        let mut index = from;
+        while index < until {
+            let (length, id) = self.longest_match(bytes, index);
+            if length == 0 {
+                break;
+            }
+            out.push(id);
+            index += length;
         }
-        else {
-            return (index, node.id);
-        }
+        index
     }
 
     pub(crate) fn tokenize(&self, text: &str) -> Vec<u16> {
-        let mut vec: Vec<u16> = Vec::new();
-        let text_length = text.len();
-        let mut index: usize = 0;
-        loop {
-            let result = self.search_the_longest(&text.as_bytes()[index..]);
-            if result.0 != 0 {
-                vec.push(result.1.into());
-                index += <u16 as Into<usize>>::into(result.0);
-            } else {
-                return vec;
-            }
-            if index >= text_length {
-                return vec;
-            }
-        }
+        let bytes = text.as_bytes();
+        let mut vec: Vec<u16> = Vec::with_capacity(bytes.len() / 3 + 1);
+        self.tokenize_range(bytes, 0, bytes.len(), &mut vec);
+        vec
     }
 }

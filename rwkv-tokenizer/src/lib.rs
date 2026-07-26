@@ -11,6 +11,12 @@ use unescape::unescape;
 use rayon::prelude::*;
 
 
+/// Bytes replayed before a chunk boundary to re-synchronize the greedy walk. Must comfortably
+/// exceed the longest token in the vocabulary (128 bytes).
+const RESYNC_WINDOW: usize = 256;
+/// Below this, splitting the work costs more than it saves.
+const PARALLEL_MIN_LEN: usize = 1 << 16;
+
 #[derive(Debug)]
 pub struct WorldTokenizer {
     tokens: Vec<Vec<u8>>,
@@ -95,6 +101,67 @@ impl WorldTokenizer {
 
     pub fn encode(&self, word: &str) -> Vec<u16> {
         self.trie.tokenize(word)
+    }
+
+    /// Encode a single text using every available core.
+    ///
+    /// The text is cut into chunks and each chunk is tokenized independently. Because greedy
+    /// longest-match has no fixed alignment, a cut is first re-synchronized by replaying the
+    /// walk from `RESYNC_WINDOW` bytes earlier; the stitching pass then verifies that each
+    /// chunk really did begin where its predecessor ended and re-tokenizes the span if not.
+    /// The result is therefore always identical to `encode`.
+    ///
+    /// Short inputs fall back to `encode`, and `encode_batch` is still the better choice for
+    /// many separate texts since it parallelizes across them without any of this bookkeeping.
+    pub fn encode_parallel(&self, text: &str) -> Vec<u16> {
+        let bytes = text.as_bytes();
+        let chunks = rayon::current_num_threads()
+            .min(bytes.len() / (RESYNC_WINDOW * 4));
+        if bytes.len() < PARALLEL_MIN_LEN || chunks < 2 {
+            return self.encode(text);
+        }
+
+        // Guess a token boundary at each cut. Each guess lands in [cut, cut + max token length).
+        let bounds: Vec<usize> = (1..chunks).into_par_iter().map(|chunk| {
+            let cut = chunk * bytes.len() / chunks;
+            let mut index = cut - RESYNC_WINDOW;
+            while index < cut {
+                let (length, _) = self.trie.longest_match(bytes, index);
+                if length == 0 {
+                    break;
+                }
+                index += length;
+            }
+            index.min(bytes.len())
+        }).collect();
+
+        let mut starts = Vec::with_capacity(chunks);
+        starts.push(0);
+        starts.extend_from_slice(&bounds);
+        let mut ends = bounds;
+        ends.push(bytes.len());
+
+        // Tokenize the spans between the guessed boundaries.
+        let parts: Vec<(Vec<u16>, usize)> = (0..starts.len()).into_par_iter().map(|chunk| {
+            let span = ends[chunk] - starts[chunk];
+            let mut part = Vec::with_capacity(span / 3 + 1);
+            let end = self.trie.tokenize_range(bytes, starts[chunk], ends[chunk], &mut part);
+            (part, end)
+        }).collect();
+
+        // Splice, falling back to a sequential pass over any span whose predecessor
+        // did not stop exactly where the guess said it would.
+        let mut vec: Vec<u16> = Vec::with_capacity(bytes.len() / 3 + 1);
+        let mut position = 0;
+        for (chunk, (part, end)) in parts.into_iter().enumerate() {
+            if position == starts[chunk] {
+                vec.extend_from_slice(&part);
+                position = end;
+            } else {
+                position = self.trie.tokenize_range(bytes, position, ends[chunk], &mut vec);
+            }
+        }
+        vec
     }
 
     pub fn encode_batch(&self, word_list: Vec<String>) -> Vec<Vec<u16>> {
@@ -885,6 +952,22 @@ Nórdicg: Ljœr ye caudran créneþ ý jor cẃran."#;
         let token_ids = tokenizer.encode(LONG_UTF8_TEXT);
         let text = tokenizer.decode(token_ids).unwrap();
         assert_eq!(text, LONG_UTF8_TEXT);
+    }
+
+    #[test]
+    fn test_encode_parallel_matches_encode() {
+        let tokenizer = WorldTokenizer::new(None).unwrap();
+        // Mixed scripts, well past PARALLEL_MIN_LEN so the chunked path is actually taken.
+        let long_text = [LONG_UTF8_TEXT, JAPANESE, BEAUTIFUL_DAY].concat().repeat(8);
+        assert!(long_text.len() > PARALLEL_MIN_LEN);
+        assert_eq!(tokenizer.encode_parallel(&long_text), tokenizer.encode(&long_text));
+    }
+
+    #[test]
+    fn test_encode_parallel_falls_back_on_short_text() {
+        let tokenizer = WorldTokenizer::new(None).unwrap();
+        assert_eq!(tokenizer.encode_parallel(BEAUTIFUL_DAY), tokenizer.encode(BEAUTIFUL_DAY));
+        assert_eq!(tokenizer.encode_parallel(""), tokenizer.encode(""));
     }
 
     #[test]

@@ -22,6 +22,12 @@ class RWKVTokenizer:
         tokens_ids = self.tokenizer.encode(text)
         return tokens_ids
 
+    def encode_parallel(self, text: str):
+        """Encode one large text across all cores. Identical output to encode(); falls
+        back to encode() below ~64 KB. For many separate texts, use encode_batch()."""
+        tokens_ids = self.tokenizer.encode_parallel(text)
+        return tokens_ids
+
     def encode_batch(self, text_list: [str]):
         tokens_ids = self.tokenizer.encode_batch(text_list)
         return tokens_ids

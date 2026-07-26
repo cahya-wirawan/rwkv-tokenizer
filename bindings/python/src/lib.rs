@@ -22,6 +22,10 @@ impl WorldTokenizer {
         self.tokenizer.encode(word)
     }
 
+    pub(crate) fn encode_parallel(&self, word: &str) -> Vec<u16> {
+        self.tokenizer.encode_parallel(word)
+    }
+
     pub(crate) fn encode_batch(&self, word_list: Vec<String>) -> Vec<Vec<u16>> {
         self.tokenizer.encode_batch(word_list)
     }
