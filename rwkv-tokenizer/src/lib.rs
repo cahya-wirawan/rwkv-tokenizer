@@ -102,12 +102,16 @@ impl WorldTokenizer {
     }
 
     pub fn decode(&self, vec: Vec<u16>) -> Result<String, Utf8Error> {
-        let mut result: Vec<u8> = Vec::new();
-        for index in vec.iter() {
-            let mut current_tokens = self.tokens[*index as usize].clone();
-            result.append(&mut current_tokens);
+        self.decode_slice(&vec)
+    }
+
+    pub fn decode_slice(&self, ids: &[u16]) -> Result<String, Utf8Error> {
+        let length = ids.iter().map(|id| self.tokens[*id as usize].len()).sum();
+        let mut result: Vec<u8> = Vec::with_capacity(length);
+        for id in ids {
+            result.extend_from_slice(&self.tokens[*id as usize]);
         }
-        Ok(str::from_utf8(&*result)?.to_string())
+        String::from_utf8(result).map_err(|e| e.utf8_error())
     }
 
     pub fn vocab_size(&self) -> usize {
@@ -881,6 +885,23 @@ Nórdicg: Ljœr ye caudran créneþ ý jor cẃran."#;
         let token_ids = tokenizer.encode(LONG_UTF8_TEXT);
         let text = tokenizer.decode(token_ids).unwrap();
         assert_eq!(text, LONG_UTF8_TEXT);
+    }
+
+    #[test]
+    fn test_decode_slice_round_trip() {
+        let tokenizer = WorldTokenizer::new(None).unwrap();
+        let token_ids = tokenizer.encode(JAPANESE);
+        assert_eq!(tokenizer.decode_slice(&token_ids).unwrap(), JAPANESE);
+        // decode still accepts an owned Vec, as both bindings rely on.
+        assert_eq!(tokenizer.decode(token_ids).unwrap(), JAPANESE);
+    }
+
+    #[test]
+    fn test_decode_rejects_invalid_utf8() {
+        let tokenizer = WorldTokenizer::new(None).unwrap();
+        // Id 129 is the raw byte 0x80: a continuation byte with nothing to continue.
+        assert!(tokenizer.decode_slice(&[129, 129]).is_err());
+        assert!(tokenizer.decode(vec![129, 129]).is_err());
     }
 
     #[test]
