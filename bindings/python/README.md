@@ -22,8 +22,13 @@ $ pip install pyrwkv-tokenizer
 [33520, 4600, 332, 59219, 21509, 47, 33, 10381, 11639, 13091, 15597, 11685, 14734, 10250, 11639, 10080]
 >>> tokenizer.decode([33520, 4600, 332, 59219, 21509, 47, 33, 10381, 11639, 13091, 15597, 11685, 14734, 10250, 11639, 10080])
 'Today is a beautiful day. 今天是美好的一天。'
+>>> tokenizer.encode_batch(["Today is a beautiful day.", " 今天是美好的一天。"])
+[[33520, 4600, 332, 59219, 21509, 47], [33, 10381, 11639, 13091, 15597, 11685, 14734, 10250, 11639, 10080]]
+>>> tokenizer.encode_parallel(large_text)  # same ids as encode(), spread over all cores
 
 ```
+Use `encode_batch` for many separate texts, and `encode_parallel` for a single large one.
+`encode_parallel` returns exactly what `encode` returns and falls back to it below 64 KB.
 
 ## Performance and Validity Test
 
@@ -52,7 +57,17 @@ tokenizer is around 17x faster than the original tokenizer and 9.6x faster than 
 
 ![performance-comparison](https://media.githubusercontent.com/media/cahya-wirawan/rwkv-tokenizer/main/data/performance-comparison.png)
 
+`encode_parallel` encodes one large text on all cores instead of a single thread, and `decode`
+no longer allocates once per token. On 2 MB of English prose on a 6-core (12-thread) i7-9750H,
+`encode` takes 23.1 ms against 2.6 ms for `encode_parallel` (8.7x), and `decode` went from
+28.1 ms to 7.4 ms (3.8x). Called from Python the `encode_parallel` gain is around 2.7x, since
+building the returned Python list then dominates. Single-threaded `encode` is unchanged, so the
+comparison against the other tokenizers above still holds.
+
 ## Changelog
+- Unreleased
+  - Added encode_parallel() to encode a single large text using all cores
+  - Sped up decode() by removing its per-token allocation
 - Version 0.9.1
   - Added utf8 error handling to decoder
 - Version 0.9.0
